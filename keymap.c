@@ -26,7 +26,9 @@ enum custom_keycodes
     QWERTY = SAFE_RANGE,
     LOWER,
     RAISE,
-    ADJUST
+    ADJUST,
+    MACRO1,
+    MACRO2
 };
 
 enum 
@@ -41,81 +43,77 @@ enum
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = 
 {
-    [TD_CAPLOCK] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS)
+    // Tap once for ;, twice for :
+    [TD_PC] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, LSFT(KC_SCLN)),
+    [TD_COMI] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, LSFT(KC_QUOT)),
+    [TD_SLA] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, LSFT(KC_SLSH)),
+    [TD_CAPLOCK] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
+    [TD_ALT] = ACTION_TAP_DANCE_DOUBLE(KC_RALT, KC_LALT),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
     [L_QWERTY] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_ESC,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_LGUI,   MO(1),  KC_SPC,     KC_ENT,   MO(2), KC_RALT
-                                        //`--------------------------'  `--------------------------'
+//|-----------------------------------------------------|                    |-----------------------------------------------------|
+     KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_TAB,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,  TD(TD_PC), TD(TD_COMI),
+  //---------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     TD(TD_CAPLOCK), KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,                 KC_N,    KC_M,    KC_COMM, KC_DOT,  TD(TD_SLA), RSFT_T(KC_ENT),
+  //---------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                         KC_LCTL, LOWER, KC_SPC,     KC_SPC, RAISE, TD(TD_ALT)
+                                      //|--------------------------|  |--------------------------|
     ),
     [L_LOWER] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         KC_TAB,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, KC_BSPC,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, XXXXXXX, XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_LGUI, _______,  KC_SPC,     KC_ENT,   MO(3), KC_RALT
-                                        //`--------------------------'  `--------------------------'
+  //|-----------------------------------------------------|                    |-----------------------------------------------------|
+     KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_BSPC,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_PWR, XXXXXXX, XXXXXXX, XXXXXXX, KC_VOLU, LALT(KC_G),                   MACRO2 , RALT(KC_PSCR), XXXXXXX,   XXXXXXX,KC_UP, KC_DEL,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_SLEP, XXXXXXX, XXXXXXX, KC_MPRV, KC_VOLD, KC_MNXT,                     MACRO1 , KC_MYCM, XXXXXXX, KC_LEFT,  KC_DOWN, KC_RGHT,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                         LCTL(KC_LALT), KC_TRNS, KC_SPC,    KC_SPC, RAISE, KC_RALT
+                                      //|--------------------------|  |--------------------------|
     ),
     [L_RAISE] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         KC_TAB, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_LGUI,   MO(3),  KC_SPC,     KC_ENT, _______, KC_RALT
-                                        //`--------------------------'  `--------------------------'
+  //|-----------------------------------------------------|                    |-----------------------------------------------------|
+     KC_ESC,  KC_EXLM, KC_AT,  KC_HASH, KC_DLR, KC_PERC,                        KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_F1, KC_F2, KC_F3,   KC_F4, KC_F5, KC_F6,                                KC_MINS, KC_EQL, KC_LBRC,  KC_RBRC, KC_PIPE, KC_DEL,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,                               KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_BSLS, KC_ENT,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                          KC_LGUI, LOWER, KC_SPC,    KC_SPC, KC_TRNS, KC_RALT
+                                      //|--------------------------|  |--------------------------|
     ),
     [L_ADJUST] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          RESET, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_RALT
-                                        //`--------------------------'  `--------------------------'
+  //|-----------------------------------------------------|                    |-----------------------------------------------------|
+     XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, RGB_TOG,                       XXXXXXX, XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     XXXXXXX, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_MOD,                       XXXXXXX, XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,   RESET,  \
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     XXXXXXX, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, XXXXXXX,                        XXXXXXX, XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,\
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                         KC_LCTL, KC_TRNS, KC_SPC,    KC_SPC, KC_TRNS, KC_RALT \
+                                      //|--------------------------|  |--------------------------|
     )
 };
 
 int RGB_current_mode;
-
-/// Set layer3 if both mod keys are pressed
-void UpdateTriLayerRGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) 
-{
-    if (IS_LAYER_ON(layer1) && IS_LAYER_ON(layer2))
-        layer_on(layer3);
-    else
-        layer_off(layer3);
-}
 
 void rgb_matrix_indicators_user(void) 
 {
 #ifdef RGB_MATRIX_ENABLE
     switch (biton32(layer_state)) 
     {
-        case _RAISE:
+        case L_RAISE:
             for (int i = 0; i < DRIVER_LED_TOTAL; i++) 
             {
                 rgb_matrix_set_color(i, 255, 0, 0);
             }
             break;
 
-        case _LOWER:
+        case L_LOWER:
             for (int i = 0; i < DRIVER_LED_TOTAL; i++) 
             {
                 rgb_matrix_set_color(i, 0, 0, 255);
@@ -205,6 +203,40 @@ void OledRenderLayerState(void)
     }
 }
 
+void OledRenderLogo(void) 
+{
+    static const char PROGMEM crkbdLogo[] = 
+    {
+        0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 
+        0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f, 
+        0x90, 0x91, 0x92, 0x93, 0x94, 0xa0, 0xa1, 0xa2, 
+        0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 
+        0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0, 0xb1, 0xb2, 
+        0xb3, 0xb4, 0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 
+        0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 
+        0xce, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0
+    };
+
+    oled_write_P(crkbdLogo, false);
+}
+
+void RenderSpace(void)
+{
+    oled_write_P(PSTR("     "), false);
+}
+
+void OledRenderPrimary(void)
+{
+    OledRenderLayerState();
+    OledRenderKeylog();
+}
+
+void OledRenderSecondary(void)
+{
+    OledRenderLogo();
+}
+
+// ==========================================================================
 
 void render_bootmagic_status(bool status) 
 {
@@ -226,36 +258,6 @@ void render_bootmagic_status(bool status)
         oled_write_ln_P(logo[1][1], false);
     }
 }
-
-void OledRenderLogo(void) 
-{
-    static const char PROGMEM crkbdLogo[] = 
-    {
-        0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 
-        0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f, 
-        0x90, 0x91, 0x92, 0x93, 0x94, 0xa0, 0xa1, 0xa2, 
-        0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 
-        0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0, 0xb1, 0xb2, 
-        0xb3, 0xb4, 0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 
-        0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 
-        0xce, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0
-    };
-
-    oled_write_P(crkbdLogo, false);
-}
-
-void OledRenderPrimary(void)
-{
-    OledRenderLayerState();
-    OledRenderKeylog();
-}
-
-void OledRenderSecondary(void)
-{
-    OledRenderLogo();
-}
-
-// ==========================================================================
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) 
 {
@@ -311,6 +313,25 @@ void matrix_init_user(void)
 
 // Events
 
+/// Set layer3 if both mod keys are pressed
+void UpdateTriLayerRGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) 
+{
+    if (IS_LAYER_ON(layer1) && IS_LAYER_ON(layer2))
+        layer_on(layer3);
+    else
+        layer_off(layer3);
+}
+
+void LayerUpdate(uint8_t layer, bool on)
+{
+    if(on)
+        layer_on(layer);
+    else
+        layer_off(layer);
+    
+    UpdateTriLayerRGB(L_LOWER, L_RAISE, L_ADJUST);
+}
+
 /// If true returned event is passed to qmk if false event is swallowed
 /// https://docs.qmk.fm/#/feature_macros
 bool process_record_user(uint16_t keycode, keyrecord_t* record) 
@@ -322,12 +343,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     if (record->event.pressed) 
         SetKeylog(keycode, record);
 
-    // switch(keycode)
-    //{
-    //    case MACRO1:
-    //
-    //    break;
-    //}
+    bool swallow = false;
 
-    return true;
+    switch(keycode)
+    {
+        case LOWER:
+            LayerUpdate(L_LOWER, record->event.pressed);
+            swallow = true;
+        break;
+
+        case RAISE:
+            LayerUpdate(L_RAISE, record->event.pressed);
+            swallow = true;
+        break;
+
+        case ADJUST:
+            if(record->event.pressed)
+                layer_on(L_ADJUST);
+            else
+                layer_off(L_ADJUST);
+
+            swallow = true;
+        break;
+
+        case MACRO1: break;
+        case MACRO2: break;
+    }
+
+    return !swallow;
 }
