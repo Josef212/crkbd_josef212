@@ -134,7 +134,7 @@ void rgb_matrix_indicators_user(void)
 
 #ifdef OLED_DRIVER_ENABLE
 
-#define L_BASE 0
+#define L_DEFAULT 0
 #define L_LOWER 2
 #define L_RAISE 4
 #define L_ADJUST 8
@@ -182,7 +182,7 @@ void OledRenderLayerState(void)
 
     switch (layer_state) 
     {
-        case L_BASE:
+        case L_DEFAULT:
             oled_write_ln_P(PSTR("Default"), false);
             break;
 
@@ -201,6 +201,9 @@ void OledRenderLayerState(void)
             oled_write_ln_P(PSTR("Adjust"), false);
             break;
     }
+
+    if(is_master)
+        oled_write_ln_P(PSTR("master"), false);
 }
 
 void OledRenderLogo(void) 
@@ -228,7 +231,7 @@ void RenderSpace(void)
 void OledRenderPrimary(void)
 {
     OledRenderLayerState();
-    OledRenderKeylog();
+    //OledRenderKeylog();
 }
 
 void OledRenderSecondary(void)
@@ -261,10 +264,8 @@ void render_bootmagic_status(bool status)
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) 
 {
-    if (!is_master) 
-        return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
-
-    return rotation;
+    // flips the display 180 degrees if offhand
+    return !is_master ? OLED_ROTATION_180 : rotation;
 }
 
 void oled_task_user(void) 
