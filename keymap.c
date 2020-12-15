@@ -318,3 +318,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
     return !swallow;
 }
+
+// TODO: Fix leds and add support for dynamic macros
+// https://beta.docs.qmk.fm/using-qmk/advanced-keycodes/feature_dynamic_macros
