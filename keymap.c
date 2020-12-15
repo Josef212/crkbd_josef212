@@ -25,7 +25,9 @@ enum custom_keycodes
 {
     QWERTY = SAFE_RANGE,
     LOWER,
+    LOWER_TG,
     RAISE,
+    RAISE_TG,
     ADJUST,
     MACRO1,
     MACRO2
@@ -37,54 +39,58 @@ enum tap_dance_keys
     TD_COMI, 
     TD_SLA, 
     TD_CAPLOCK, 
-    TD_ALT 
+    TD_ALT,
+    TD_APP_CAPLCK,
+    TD_LOWER,
+    TD_RAISE
 };
 
 qk_tap_dance_action_t tap_dance_actions[] = 
 {
-    // Tap once for ;, twice for :
-    [TD_PC] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, LSFT(KC_SCLN)),
-    [TD_COMI] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, LSFT(KC_QUOT)),
-    [TD_SLA] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, LSFT(KC_SLSH)),
-    [TD_CAPLOCK] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
-    [TD_ALT] = ACTION_TAP_DANCE_DOUBLE(KC_RALT, KC_LALT),
+    [TD_PC] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, LSFT(KC_SCLN)),      // Tap once for ; twice for :
+    [TD_COMI] = ACTION_TAP_DANCE_DOUBLE(LSFT(KC_QUOT), KC_QUOT),    // Tap once for " twice for '
+    [TD_SLA] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, LSFT(KC_SLSH)),     // Tap once for / twice for ?
+    [TD_APP_CAPLCK] = ACTION_TAP_DANCE_DOUBLE(KC_LGUI, KC_CAPS),     // Tap once for Win twice for CAP LOCK
+    [TD_ALT] = ACTION_TAP_DANCE_DOUBLE(KC_LALT, KC_RALT),           // Tap once for ALTGR twice for ALT
+    [TD_LOWER] = ACTION_TAP_DANCE_DOUBLE(LOWER, LOWER_TG),
+    [TD_RAISE] = ACTION_TAP_DANCE_DOUBLE(RAISE, RAISE_TG),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
     [L_QWERTY] = LAYOUT(
     //|-----------------------------------------------------|                    |-----------------------------------------------------|
-    KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+    KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     KC_TAB,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,  TD(TD_PC), TD(TD_COMI),
     //---------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    TD(TD_CAPLOCK), KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,                 KC_N,    KC_M,    KC_COMM, KC_DOT,  TD(TD_SLA), RSFT_T(KC_ENT),
+    KC_LSFT, KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M,    KC_COMM, KC_DOT,  TD(TD_SLA), TD(TD_APP_CAPLCK),
     //---------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_LCTL, LOWER, KC_SPC,     KC_SPC, RAISE, TD(TD_ALT)
+                                        KC_LCTL, LOWER, KC_SPC,         KC_ENT, RAISE, TD(TD_ALT)
                                         //|--------------------------|  |--------------------------|
     ),
 
     [L_LOWER] = LAYOUT(
     //|-----------------------------------------------------|                    |-----------------------------------------------------|
-    KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_BSPC,
+    KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_BSPC,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    KC_PWR, XXXXXXX, XXXXXXX, XXXXXXX, KC_VOLU, LALT(KC_G),                   MACRO2 , RALT(KC_PSCR), XXXXXXX,   XXXXXXX,KC_UP, KC_DEL,
+    XXXXXXX, KC_RGHT, KC_UP, KC_DOWN, KC_RGHT, LALT(KC_G),                     KC_HOME , KC_END, KC_PGUP, KC_PGDOWN, XXXXXXX, XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    KC_SLEP, XXXXXXX, XXXXXXX, KC_MPRV, KC_VOLD, KC_MNXT,                     MACRO1 , KC_MYCM, XXXXXXX, KC_LEFT,  KC_DOWN, KC_RGHT,
+    KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      DYN_REC_STOP , DYN_MACRO_PLAY1, DYN_MACRO_PLAY2, DYN_REC_START1,  DYN_REC_START2, KC_LGUI,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        LCTL(KC_LALT), KC_TRNS, KC_SPC,    KC_SPC, RAISE, KC_RALT
+                                        KC_LCTL, KC_TRNS, KC_SPC,       KC_ENT, RAISE, KC_RALT
                                         //|--------------------------|  |--------------------------|
     ),
 
     [L_RAISE] = LAYOUT(
     //|-----------------------------------------------------|                    |-----------------------------------------------------|
-    KC_ESC,  KC_EXLM, KC_AT,  KC_HASH, KC_DLR, KC_PERC,                        KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
+    KC_GRV,  KC_EXLM, KC_AT,  KC_HASH, KC_DLR, KC_PERC,                        KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_DEL,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    KC_F1, KC_F2, KC_F3,   KC_F4, KC_F5, KC_F6,                                KC_MINS, KC_EQL, KC_LBRC,  KC_RBRC, KC_PIPE, KC_DEL,
+    KC_F1, KC_F2, KC_F3,   KC_F4, KC_F5, KC_F6,                                KC_LBRC, KC_RBRC, KC_BSLS,  XXXXXXX, XXXXXXX, XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,                               KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_BSLS, KC_ENT,
+    KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,                               KC_MINS, KC_EQUAL, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_LGUI, LOWER, KC_SPC,    KC_SPC, KC_TRNS, KC_RALT
+                                        KC_LGUI, LOWER, KC_LSFT,         KC_SPC, KC_TRNS, KC_RALT
                                         //|--------------------------|  |--------------------------|
     ),
 
@@ -92,11 +98,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
     //|-----------------------------------------------------|                    |-----------------------------------------------------|
     XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, RGB_TOG,                       XXXXXXX, XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,\
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_MOD,                       XXXXXXX, XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,   RESET,  \
+    XXXXXXX, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_MOD,                       XXXXXXX, KC_VOLD,  KC_VOLU,   XXXXXXX,   XXXXXXX,   RESET,  \
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, XXXXXXX,                        XXXXXXX, XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,\
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_LCTL, KC_TRNS, KC_SPC,    KC_SPC, KC_TRNS, KC_RALT \
+                                        KC_LCTL, KC_TRNS, KC_SPC,       KC_SPC, KC_TRNS, KC_RALT \
                                         //|--------------------------|  |--------------------------|
     )
 };

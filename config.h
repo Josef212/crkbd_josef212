@@ -15,7 +15,7 @@
 #define USE_SERIAL_PD2
 
 #define TAPPING_FORCE_HOLD
-#define TAPPING_TERM 150
+#define TAPPING_TERM 200
 
 #define OLED_FONT_H "glcdfont.c"
 //#define OLED_FONT_WIDTH 5
